@@ -1,6 +1,6 @@
 import {Post} from '../entities/Post'
 import {Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, UseMiddleware} from 'type-graphql'
-import { LoginMiddleware } from '../middlewares/loginMiddleware'
+import { CheckLogin } from '../middlewares/checkLogin'
 import MyContext from 'src/types/context'
 
 
@@ -26,7 +26,7 @@ class MultiplePostsReturnType {
 @Resolver()
 export class PostResolver {
   @Mutation(() => SinglePostReturnType)
-  @UseMiddleware(LoginMiddleware)
+  @UseMiddleware(CheckLogin)
   async createPost(
     @Arg('title') title: string,
     @Arg('content') content: string,

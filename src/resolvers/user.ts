@@ -1,19 +1,21 @@
 import { User } from '../entities/User'
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from 'type-graphql'
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver, UseMiddleware } from 'type-graphql'
 import bcrypt from 'bcrypt'
 import MyContext from '../types/context'
 import { createAccessToken, createRefreshToken } from '../utils/createToken'
+import { FormError } from '../types/formError'
+import { registerMiddleware } from '../middlewares/registerMiddleware'
+import { registerResponse } from '../types/registerResponse'
 
 @InputType()
 class userInput{
-  
+
   @Field()
     email: string
-  
+
   @Field()
     password: string
 } 
-
 
 @ObjectType()
 class loginResponse{
@@ -21,26 +23,37 @@ class loginResponse{
   @Field(() => String, {nullable:true})
     token?: string
 
-  @Field(() => String, {nullable:true})
-    error?: string
+  @Field(() => [FormError], {nullable:true})
+    errors?: FormError[]
 }
 
 Resolver()
 export class UserResolver {
-  @Mutation(() => User, { nullable: true})
+  
+  @Mutation(() => registerResponse)
+  @UseMiddleware(registerMiddleware)
   async registerUser(
     @Arg('options') options: userInput
-  ): Promise<User | null> {
+  ): Promise<registerResponse> {
     try {
       const passwordHash = await bcrypt.hash(options.password,10)
       const user = await User.create({
         email: options.email,
         passwordHash
       }).save()
-      return user
+      return {
+        user
+      }
     } catch (error) {
-      if(error.code === 23505) {
-        throw new Error(`Unable to create post. ${error.message}`)
+      if(error.code === '23505') {
+        return {
+          errors:[
+            {
+              field: 'email',
+              message: 'A user with that email already exists. Please use another email.'
+            }
+          ]
+        }
       }
       throw error
     }
@@ -51,30 +64,38 @@ export class UserResolver {
     @Arg('options') options: userInput,
     @Ctx() { res }: MyContext
   ): Promise<loginResponse> {
-
     const user = await User.findOne({email:options.email})
+    
+    //if user is not found
     if(!user) {
-      return {
-        error: 'user not found'
+      return{
+        errors: [
+          {
+            field: 'email',
+            message: 'A user with that email does not exist'
+          }
+        ]
       }
     }
 
     const valid = await bcrypt.compare(options.password, user.passwordHash)
-
+    
+    //if user is found and password is valid
     if(valid) {
-      try{
-        res.cookie('jid', createRefreshToken(user))
-        return {
-          token: await createAccessToken(user)
-        }
-      } catch(error){
-        return{
-          error
-        }
+      res.cookie('jid', createRefreshToken(user))
+      return {
+        token : await createAccessToken(user)
       }
     } 
-    return {
-      error: 'invalid password'
+
+    //if user is found but password is incorrect
+    return{
+      errors: [
+        {
+          field: 'password',
+          message: 'Invalid password'
+        }
+      ]
     }
 
   }

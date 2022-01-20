@@ -3,7 +3,7 @@ import MyContext from 'src/types/context'
 import { myPayload } from 'src/types/payload'
 import { MiddlewareFn } from 'type-graphql'
 
-export const LoginMiddleware: MiddlewareFn<MyContext> = async ({ context }, next) => {
+export const CheckLogin: MiddlewareFn<MyContext> = async ({ context }, next) => {
   
   const authorization = context.req.headers['authorization']
   if(!authorization) {
