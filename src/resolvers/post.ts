@@ -5,6 +5,7 @@ import MyContext from '../types/context'
 import { createPostResponse } from '../types/createPostResponse'
 import { User } from '../entities/User'
 import { CheckPostForm } from '../middlewares/checkPostForm'
+import { Vote } from '../entities/Vote'
 
 @Resolver()
 export class PostResolver {
@@ -59,6 +60,62 @@ export class PostResolver {
       return post
     }
     throw new Error('Unable to find post.')
+  }
+
+  @Mutation(() => String)
+  @UseMiddleware(CheckLogin)
+  async vote(
+    @Arg('value') value: number,
+    @Arg('id') id: number, 
+    @Ctx() { payload }: MyContext
+  ):Promise<any>{
+    if(!payload){
+      throw new Error('Error while voting post. Try logging in again.')
+    }
+
+    const user = await User.findOne({ id: payload.userId })
+    if(!user) {
+      throw new Error('Error while voting post. User not found. Try logging in again')
+    }
+
+    const post = await Post.findOne({ id }, {relations: ['creator', 'votes']})
+    if(!post) {
+      throw new Error('Error while deleting post. Post not found.')
+    }
+
+    const vote = await Vote.findOne({ userId: user.id, postId: post.id })
+    console.log(vote)
+      
+    if(!vote) {
+      console.log('vote does not exists')
+      post.voteCount = post.voteCount + value
+      post.save()  
+    
+      await Vote.create({
+        userId: user.id,
+        postId: post.id,
+        post: post,
+        user: user,
+        value: value
+      }).save()
+
+      return `vote added. Vote count: ${post.voteCount}`
+    } else {
+      console.log('vote exists')
+      if(vote.value === value){
+        await vote.remove()
+        post.voteCount -= vote.value
+        post.save()
+        return `vote removed. Vote count: ${post.voteCount}`
+      } else {
+        vote.value = value
+        vote.save()
+        post.voteCount += 2*vote.value
+        post.save()
+        return `vote reversed. Vote count: ${post.voteCount}`
+      }
+    }
+
   }
 
 
