@@ -1,14 +1,30 @@
 import {Post} from '../entities/Post'
-import {Arg, Ctx, Mutation, Query, Resolver, UseMiddleware} from 'type-graphql'
+import {Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root, UseMiddleware} from 'type-graphql'
 import { CheckLogin } from '../middlewares/checkLogin'
 import MyContext from '../types/context'
 import { createPostResponse } from '../types/createPostResponse'
 import { User } from '../entities/User'
 import { CheckPostForm } from '../middlewares/checkPostForm'
 import { Vote } from '../entities/Vote'
+import { CheckVoteValue } from '../middlewares/checkVoteValue'
 
-@Resolver()
+@Resolver(Post)
 export class PostResolver {
+
+  @FieldResolver()
+  async voteStatus(
+    @Root() post: Post,
+    @Ctx() { payload }: MyContext
+  ){
+    const vote = await Vote.findOne({ postId: post.id, userId: payload.userId})
+    if(vote) {
+      return vote.value
+    }
+    return 0
+  }
+
+
+
   @Mutation(() => createPostResponse)
   @UseMiddleware(CheckLogin)
   @UseMiddleware(CheckPostForm)
@@ -63,12 +79,12 @@ export class PostResolver {
   }
 
   @Mutation(() => String)
-  @UseMiddleware(CheckLogin)
+  @UseMiddleware(CheckLogin, CheckVoteValue)
   async vote(
     @Arg('value') value: number,
     @Arg('id') id: number, 
     @Ctx() { payload }: MyContext
-  ):Promise<any>{
+  ):Promise<string>{
     if(!payload){
       throw new Error('Error while voting post. Try logging in again.')
     }
