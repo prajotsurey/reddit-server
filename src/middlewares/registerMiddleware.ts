@@ -1,4 +1,4 @@
-import { registerResponse } from 'src/resolvers/user'
+import { registerResponse } from '../types/registerResponse'
 import { MiddlewareFn } from 'type-graphql'
 
 export const registerMiddleware: MiddlewareFn = async ({ args }, next):Promise<registerResponse> => {

@@ -7,18 +7,10 @@ export const CheckLogin: MiddlewareFn<MyContext> = async ({ context }, next) => 
   
   const authorization = context.req.headers['authorization']
   if(!authorization) {
-    return {
-      error: 'User is not logged in'
-    }
+    throw new Error('Authorization header missing. Try logging in again')
   }
-  try{
-    const payload = verify(authorization.split(' ')[1], process.env.ACCESS_TOKEN_SECRET!)
-    context.payload = payload as myPayload
-    return next()
-  } catch(error) {
-    return {
-      error: error.message
-    }
-  }
+  const payload = verify(authorization.split(' ')[1], process.env.ACCESS_TOKEN_SECRET!)
+  context.payload = payload as myPayload
+  return next()
   
 }

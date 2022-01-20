@@ -3,7 +3,7 @@ import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver, UseMiddlewa
 import bcrypt from 'bcrypt'
 import MyContext from '../types/context'
 import { createAccessToken, createRefreshToken } from '../utils/createToken'
-import { FormError } from '../types/formError'
+import { FormFieldError } from '../types/formErrors'
 import { registerMiddleware } from '../middlewares/registerMiddleware'
 import { registerResponse } from '../types/registerResponse'
 
@@ -23,8 +23,8 @@ class loginResponse{
   @Field(() => String, {nullable:true})
     token?: string
 
-  @Field(() => [FormError], {nullable:true})
-    errors?: FormError[]
+  @Field(() => [FormFieldError], {nullable:true})
+    errors?: FormFieldError[]
 }
 
 Resolver()
@@ -100,4 +100,11 @@ export class UserResolver {
 
   }
 
+
+  @Mutation(() => String)
+  logout(
+    @Ctx() { res }:MyContext
+  ){
+    res.cookie('jid', '')
+  }
 }

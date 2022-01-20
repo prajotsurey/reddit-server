@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from 'type-graphql'
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, ManyToOne } from 'typeorm'
+import { User } from './User'
 
 @ObjectType()
 @Entity()
@@ -24,5 +25,10 @@ export class Post extends BaseEntity{
   @Field(() => Int, { nullable: true })
   @UpdateDateColumn()
     updatedAt?: number
+
+  @Field(() => User)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @ManyToOne(_type => User, user => user.posts)
+    creator: User
 
 }

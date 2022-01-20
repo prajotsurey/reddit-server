@@ -1,12 +1,12 @@
-import { User } from '../entities/User'
 import { ObjectType, Field } from 'type-graphql'
 import { FormFieldError } from './formErrors'
+import { Post } from '../entities/Post'
 
 @ObjectType()
-export class registerResponse{
+export class createPostResponse{
 
-  @Field(() => User, {nullable:true})
-    user?: User
+  @Field(() => Post, {nullable:true})
+    post?: Post
 
   @Field(() => [FormFieldError], {nullable:true})
     errors?: FormFieldError[]

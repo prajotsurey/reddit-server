@@ -1,3 +1,3 @@
 export type myPayload = {
-  userId: string
+  userId: number
 }
