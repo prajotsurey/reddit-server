@@ -7,6 +7,7 @@ import { PostResolver } from './resolvers/post'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { createConnection } from 'typeorm'
 import { UserResolver } from './resolvers/user'
+import { createVoteLoader } from './utils/voteLoader'
 const main = async () => {
 
   const app = express()
@@ -18,7 +19,10 @@ const main = async () => {
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground(),
     ],
-    context: ({ req, res }) => ({ req, res })
+    context: ({req, res }) => ({
+      req,
+      res,
+      voteLoader: createVoteLoader() })
   })
 
   await apolloServer.start()

@@ -14,15 +14,22 @@ export class PostResolver {
   @FieldResolver()
   async voteStatus(
     @Root() post: Post,
-    @Ctx() { payload }: MyContext
+    @Ctx() { payload, voteLoader }: MyContext
   ){
-    const vote = await Vote.findOne({ postId: post.id, userId: payload.userId})
-    if(vote) {
-      return vote.value
-    }
-    return 0
+    return await voteLoader.load({
+      postId: post.id, 
+      userId: payload.userId})
   }
 
+  // @FieldResolver()
+  // async creator(
+  //   @Root() post: Post,
+  //   @Ctx() { payload, voteLoader }: MyContext
+  // ){
+  //   return await voteLoader.load({
+  //     postId: post.id, 
+  //     userId: payload.userId})
+  // }
 
 
   @Mutation(() => createPostResponse)
