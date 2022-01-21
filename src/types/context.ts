@@ -9,6 +9,7 @@ type MyContext = {
   payload: myPayload
   voteLoader: ReturnType<typeof createVoteLoader>
   userLoader: ReturnType<typeof createUserLoader>
+  loggedIn: boolean
 }
 
 export default MyContext
