@@ -19,7 +19,7 @@ export class User extends BaseEntity {
 
   @Field()
   @CreateDateColumn()
-    createdAt: string
+    createdAt: Date
 
   @Field(() => [Post])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,5 +1,5 @@
 import {Post} from '../entities/Post'
-import {Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root, UseMiddleware} from 'type-graphql'
+import {Arg, Ctx, Field, FieldResolver, Mutation, ObjectType, Query, Resolver, Root, UseMiddleware} from 'type-graphql'
 import { CheckLogin } from '../middlewares/checkLogin'
 import MyContext from '../types/context'
 import { createPostResponse } from '../types/createPostResponse'
@@ -7,6 +7,17 @@ import { User } from '../entities/User'
 import { CheckPostForm } from '../middlewares/checkPostForm'
 import { Vote } from '../entities/Vote'
 import { CheckVoteValue } from '../middlewares/checkVoteValue'
+import { getConnection } from 'typeorm'
+
+@ObjectType()
+class PaginatedPostsResponse{
+  
+  @Field(() => [Post])
+    posts: Post[]
+
+  @Field(() => Boolean)
+    hasMore: boolean
+}
 
 @Resolver(Post)
 export class PostResolver {
@@ -71,6 +82,44 @@ export class PostResolver {
       return await Post.find({})
     } catch(error) {
       throw new error(`Unable to find posts. ${error.message}`)
+    }
+  }
+
+
+  @Query(() => PaginatedPostsResponse)
+  @UseMiddleware(CheckLogin)
+  async paginatedPosts(
+    @Arg('cursor', () => String, { nullable:true }) cursor?: string, 
+  ):Promise<PaginatedPostsResponse>{
+
+    const replacements:string[] = []
+
+    if (cursor){
+      replacements.push(cursor)
+    }
+
+    // call 11 posts
+    const posts = await getConnection().query(
+      `
+      select * from "post"
+      ${cursor ? 'where "createdAt" < $1': ''}
+      order by "createdAt" DESC
+      limit 11
+      `,
+      replacements
+    )
+
+    //if 11th post exists. return hasMore : true
+    if(posts[10]) {
+      return {
+        posts,
+        hasMore: true
+      }
+    }
+
+    return {
+      posts,
+      hasMore: false
     }
   }
 

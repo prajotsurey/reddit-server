@@ -11,7 +11,10 @@ import { createVoteLoader } from './utils/voteLoader'
 const main = async () => {
 
   const app = express()
-  await createConnection()
+  const conn = await createConnection()
+  if(process.env.ENV === 'development'){
+    conn.runMigrations()
+  }
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [PostResolver, UserResolver]

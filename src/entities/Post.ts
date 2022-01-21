@@ -22,19 +22,19 @@ export class Post extends BaseEntity{
 
   @Field()
   @CreateDateColumn()
-    createdAt: number
+    createdAt: Date
 
   @Field(() => Int, { nullable: true })
   @UpdateDateColumn()
-    updatedAt?: number
+    updatedAt?: Date
 
   @Field(() => User)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @ManyToOne(_type => User, user => user.posts)
+  @ManyToOne(_type => User, user => user.posts, {onDelete: 'CASCADE'})
     creator: User
 
   @Field(() => [Vote], {nullable: true})
-  @OneToMany(_type => Vote, vote => vote.post, {onDelete: 'CASCADE'})
+  @OneToMany(_type => Vote, vote => vote.post)
     votes: Vote[]
 
   @Field()
