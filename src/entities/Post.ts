@@ -28,6 +28,10 @@ export class Post extends BaseEntity{
   @UpdateDateColumn()
     updatedAt?: Date
 
+  @Field()
+  @Column()
+    creatorId!: number
+
   @Field(() => User)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @ManyToOne(_type => User, user => user.posts, {onDelete: 'CASCADE'})

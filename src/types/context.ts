@@ -1,12 +1,14 @@
 import { Request, Response } from 'express'
-import { createVoteLoader } from 'src/utils/voteLoader'
+import { createUserLoader } from '../utils/createUserLoader'
+import { createVoteLoader } from '../utils/createVoteLoader'
 import { myPayload } from './payload'
 
 type MyContext = {
   req:Request
   res:Response
-  payload: myPayload,
+  payload: myPayload
   voteLoader: ReturnType<typeof createVoteLoader>
+  userLoader: ReturnType<typeof createUserLoader>
 }
 
 export default MyContext

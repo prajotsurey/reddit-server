@@ -32,15 +32,13 @@ export class PostResolver {
       userId: payload.userId})
   }
 
-  // @FieldResolver()
-  // async creator(
-  //   @Root() post: Post,
-  //   @Ctx() { payload, voteLoader }: MyContext
-  // ){
-  //   return await voteLoader.load({
-  //     postId: post.id, 
-  //     userId: payload.userId})
-  // }
+  @FieldResolver()
+  async creator(
+    @Root() post: Post,
+    @Ctx() { payload, userLoader }: MyContext
+  ){
+    return await userLoader.load(post.creatorId)
+  }
 
 
   @Mutation(() => createPostResponse)
@@ -87,7 +85,7 @@ export class PostResolver {
 
 
   @Query(() => PaginatedPostsResponse)
-  @UseMiddleware(CheckLogin)
+  @UseMiddleware()
   async paginatedPosts(
     @Arg('cursor', () => String, { nullable:true }) cursor?: string, 
   ):Promise<PaginatedPostsResponse>{
