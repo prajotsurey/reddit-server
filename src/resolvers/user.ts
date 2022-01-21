@@ -88,6 +88,16 @@ export class UserResolver {
       }
     }
 
+    if(!options.password) {
+      return {
+        errors: [
+          {
+            field: 'password',
+            message: 'password cannot be empty'
+          }
+        ]
+      }
+    }
     const valid = await bcrypt.compare(options.password, user.passwordHash)
     
     //if user is found and password is valid
