@@ -1,11 +1,12 @@
 import { User } from '../entities/User'
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver, UseMiddleware } from 'type-graphql'
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from 'type-graphql'
 import bcrypt from 'bcrypt'
 import MyContext from '../types/context'
 import { createAccessToken, createRefreshToken } from '../utils/createToken'
 import { FormFieldError } from '../types/formErrors'
 import { registerMiddleware } from '../middlewares/registerMiddleware'
 import { registerResponse } from '../types/registerResponse'
+import { CheckLogin } from '../middlewares/checkLogin'
 
 @InputType()
 class userInput{
@@ -30,6 +31,15 @@ class loginResponse{
 Resolver()
 export class UserResolver {
   
+  @Query(() => User||undefined)
+  @UseMiddleware(CheckLogin)
+  async Me(
+    @Ctx() { payload }: MyContext
+  ):Promise<User|undefined>{
+    return User.findOne({id: payload.userId})
+  }
+
+
   @Mutation(() => registerResponse)
   @UseMiddleware(registerMiddleware)
   async registerUser(
