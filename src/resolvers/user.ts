@@ -36,6 +36,9 @@ export class UserResolver {
   async Me(
     @Ctx() { payload }: MyContext
   ):Promise<User|undefined>{
+    if(!payload){
+      throw new Error('There is a problem with the authorizaion header. Unable to decode and find userId. Try logging in again.')
+    }
     return User.findOne({id: payload.userId})
   }
 
