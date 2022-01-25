@@ -130,5 +130,6 @@ export class UserResolver {
     @Ctx() { res }:MyContext
   ){
     res.cookie('jid', '')
+    return 'logout successfull'
   }
 }
