@@ -25,7 +25,7 @@ const main = async () => {
       credentials: true,
     },)
   )
-
+  app.set('trust proxy', 1)
   app.post('/refresh_token', async(req,res) => {
     const token =req.cookies.jid
     //if refresh token unavailable
