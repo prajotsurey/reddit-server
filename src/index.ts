@@ -14,10 +14,11 @@ import { verify } from 'jsonwebtoken'
 import { User } from './entities/User'
 import { createAccessToken, createRefreshToken } from './utils/createToken'
 import { sendRefreshToken } from './utils/sendRefreshToken'
-
+import cookieparser from 'cookie-parser'
 const main = async () => {
 
   const app = express()
+  app.use(cookieparser())
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
@@ -27,13 +28,12 @@ const main = async () => {
 
   app.post('/refresh_token', async(req,res) => {
     const token =req.cookies.jid
-
     //if refresh token unavailable
     if(!token) {
       return res.send({ok: false, accessToken: ''})
     }
 
-    const payload:any = null
+    let payload:any = null
 
     try{
       payload = await verify(token, process.env.REFRESH_TOKEN_SECRET!)
