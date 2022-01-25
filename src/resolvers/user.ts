@@ -7,6 +7,7 @@ import { FormFieldError } from '../types/formErrors'
 import { registerMiddleware } from '../middlewares/registerMiddleware'
 import { registerResponse } from '../types/registerResponse'
 import { CheckLogin } from '../middlewares/checkLogin'
+import { sendRefreshToken } from '../utils/sendRefreshToken'
 
 @InputType()
 class userInput{
@@ -105,7 +106,7 @@ export class UserResolver {
     
     //if user is found and password is valid
     if(valid) {
-      res.cookie('jid', createRefreshToken(user))
+      sendRefreshToken(res,createRefreshToken(user))
       return {
         token : await createAccessToken(user)
       }
