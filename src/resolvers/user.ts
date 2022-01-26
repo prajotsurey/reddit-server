@@ -80,6 +80,28 @@ export class UserResolver {
   ): Promise<loginResponse> {
     const user = await User.findOne({email:options.email})
     
+    if(!options.email) {
+      return {
+        errors: [
+          {
+            field: 'email',
+            message: 'Email cannot be empty'
+          }
+        ]
+      }
+    }
+
+    if(!options.password) {
+      return {
+        errors: [
+          {
+            field: 'password',
+            message: 'Password cannot be empty'
+          }
+        ]
+      }
+    }
+
     //if user is not found
     if(!user) {
       return{
@@ -92,16 +114,6 @@ export class UserResolver {
       }
     }
 
-    if(!options.password) {
-      return {
-        errors: [
-          {
-            field: 'password',
-            message: 'password cannot be empty'
-          }
-        ]
-      }
-    }
     const valid = await bcrypt.compare(options.password, user.passwordHash)
     
     //if user is found and password is valid
