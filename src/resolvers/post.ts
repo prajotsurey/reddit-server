@@ -125,6 +125,51 @@ export class PostResolver {
     }
   }
 
+  @Query(() => PaginatedPostsResponse)
+  @UseMiddleware(CheckLogin)
+  async myPaginatedPosts(
+    @Ctx() { payload } : MyContext,
+    @Arg('cursor', () => String, { nullable:true }) cursor?: string,
+  ):Promise<PaginatedPostsResponse>{
+
+    if(!payload) {
+      throw new Error('Not logged in')
+    }
+
+    const replacements:string[] = []
+
+    replacements.push(`${payload.userId}`)
+
+    if (cursor){
+      replacements.push(cursor)
+    }
+
+    // call 11 posts
+    const posts = await getConnection().query(
+      `
+      select * from "post"
+      ${cursor ? 'where "creatorId" = $1 AND "createdAt" < $2 ': 'where "creatorId" = $1'}
+
+      order by "createdAt" DESC
+      limit 11
+      `,
+      replacements
+    )
+    console.log(posts)
+    //if 11th post exists. return hasMore : true
+    if(posts[10]) {
+      return {
+        posts,
+        hasMore: true
+      }
+    }
+
+    return {
+      posts,
+      hasMore: false
+    }
+  }
+
   @Query(() => Post)
   @UseMiddleware(CheckLogin)
   async post(
