@@ -32,15 +32,23 @@ class loginResponse{
 Resolver()
 export class UserResolver {
   
-  @Query(() => User||undefined)
+  @Query(() => User||null)
   @UseMiddleware(CheckLogin)
   async Me(
     @Ctx() { payload }: MyContext
-  ):Promise<User|undefined>{
+  ):Promise<User|null>{
     if(!payload){
-      throw new Error('There is a problem with the authorizaion header. Unable to decode and find userId. Try logging in again.')
+      return null
     }
-    return User.findOne({id: payload.userId})
+    const user =  await User.findOne({id: payload.userId})
+ 
+    if(user){
+      return user
+    }
+
+    else {
+      return null
+    }
   }
 
 
