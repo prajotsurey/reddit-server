@@ -32,7 +32,7 @@ class loginResponse{
 Resolver()
 export class UserResolver {
   
-  @Query(() => User||null)
+  @Query(() => User, {nullable: true} )
   @UseMiddleware(CheckLogin)
   async Me(
     @Ctx() { payload }: MyContext
