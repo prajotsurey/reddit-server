@@ -25,6 +25,24 @@ const main = async () => {
       credentials: true,
     },)
   )
+  let retries = 5
+  while (retries){
+    try {
+      console.log(process.env.NODE_ENV)
+      const conn = await createConnection()
+      if(process.env.NODE_ENV === 'production'){
+        console.log(process.env.ENV)
+        await conn.runMigrations()
+      }
+      break
+    } catch (err) {
+      console.log(err)
+      retries -= 1
+      console.log(`retries left: ${retries}`)
+      await new Promise(res => setTimeout(res,5000))
+    }
+  }
+
   app.set('trust proxy', 1)
   app.post('/refresh_token', async(req,res) => {
     const token =req.cookies.jid
