@@ -20,7 +20,7 @@ export class Post extends BaseEntity{
   @Column()
     content: string
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
     createdAt: Date
 

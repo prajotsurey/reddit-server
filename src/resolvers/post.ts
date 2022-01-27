@@ -101,16 +101,21 @@ export class PostResolver {
     }
 
     // call 11 posts
+
+
+    //adding the timestamptz converter was curcial to this query
+    //without it there would be conflict between the db's date type and the query's date time and no posts would be returned
+    //this converter convert's the createdat date into datetime timestamp whihc is used in psql db.
     const posts = await getConnection().query(
       `
       select * from "post"
-      ${cursor ? 'where "createdAt" < $1': ''}
+      ${cursor ? 'where "createdAt" < ($1)::timestamptz': ''}
       order by "createdAt" DESC
       limit 11
       `,
       replacements
     )
-
+    console.log(posts)
     //if 11th post exists. return hasMore : true
     if(posts[10]) {
       return {
@@ -148,7 +153,7 @@ export class PostResolver {
     const posts = await getConnection().query(
       `
       select * from "post"
-      ${cursor ? 'where "creatorId" = $1 AND "createdAt" < $2 ': 'where "creatorId" = $1'}
+      ${cursor ? 'where "creatorId" = $1 AND "createdAt" < ($2)::timestamptz ': 'where "creatorId" = $1'}
 
       order by "createdAt" DESC
       limit 11
