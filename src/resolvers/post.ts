@@ -114,7 +114,7 @@ export class PostResolver {
     //if 11th post exists. return hasMore : true
     if(posts[10]) {
       return {
-        posts,
+        posts: posts.slice(0,10),
         hasMore: true
       }
     }
@@ -159,13 +159,13 @@ export class PostResolver {
     //if 11th post exists. return hasMore : true
     if(posts[10]) {
       return {
-        posts,
+        posts: posts.slice(0,10),
         hasMore: true
       }
     }
 
     return {
-      posts,
+      posts: posts,
       hasMore: false
     }
   }
