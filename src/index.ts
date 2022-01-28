@@ -26,11 +26,11 @@ const main = async () => {
     },)
   )
   let retries = 5
+  const conn = await createConnection()
   while (retries){
     try {
-      console.log(process.env.NODE_ENV)
-      const conn = await createConnection()
-      if(process.env.NODE_ENV === 'production'){
+      console.log(process.env.ENV === 'production')
+      if(process.env.ENV === 'production'){
         console.log(process.env.ENV)
         await conn.runMigrations()
       }
@@ -42,6 +42,7 @@ const main = async () => {
       await new Promise(res => setTimeout(res,5000))
     }
   }
+
 
   app.set('trust proxy', 1)
   app.post('/refresh_token', async(req,res) => {
@@ -73,11 +74,6 @@ const main = async () => {
     return res.send({ ok: true, accessToken: createAccessToken(user) })
 
   })
-
-  const conn = await createConnection()
-  if(process.env.ENV === 'development'){
-    conn.runMigrations()
-  }
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [PostResolver, UserResolver]
@@ -97,7 +93,7 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors:false })
 
-  app.listen(4000, () => {
+  app.listen(process.env.PORT || 4000, () => {
     console.log('server running at localhost:4000/graphql')
   })
 }
