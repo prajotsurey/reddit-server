@@ -1,6 +1,8 @@
 # reddit-clone-server
 
-Backend for a fullstack reddit clone.
+Backend for a fullstack reddit clone. [Website](https://reddit-client-nu.vercel.app/)
+
+[Frontend repository](https://github.com/prajotsurey/reddit-client)
 
 Built using Typescript, TypeOrm, type-graphql and apollo-server-express. 
 * [Installation](#user-content-installation)
