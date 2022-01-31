@@ -149,7 +149,7 @@ export class UserResolver {
   logout(
     @Ctx() { res }:MyContext
   ){
-    res.cookie('jid', '')
+    sendRefreshToken(res,'')
     return 'logout successfull'
   }
 }
