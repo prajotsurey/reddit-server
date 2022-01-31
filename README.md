@@ -99,11 +99,9 @@ To do this, edit the 'start' script in packge.json as follows:
 
 ## Guides
 
-[Deploying to aws EB](https://medium.com/swlh/deploy-https-node-postgres-redis-react-to-aws-ef252567200d)
+* [Deploying to aws EB](https://medium.com/swlh/deploy-https-node-postgres-redis-react-to-aws-ef252567200d). (Do not follow step 10. It uses certbot-auto to generate ssl certificate which is no longer supported/working. Follow below tutorial for enabling ssl)
 
-Do not follow step 10. It uses certbot-auto to generate ssl certificate which is no longer supported/working. Follow below tutorial for enabling ssl.
-
-[Enabling SSL without a custom domain](https://www.linkedin.com/pulse/how-connect-your-backend-api-elastic-beanstalk-cloudfront-kamau/)
+* [Enabling SSL without a custom domain](https://www.linkedin.com/pulse/how-connect-your-backend-api-elastic-beanstalk-cloudfront-kamau/)
 
 
 
