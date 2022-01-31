@@ -1,10 +1,21 @@
-# reddit-clone-server
+# reddit clone server built with Typescript, Apollo-express-server, PostgreSQL and Graphql
 
-Backend for a fullstack reddit clone. [Website](https://reddit-client-nu.vercel.app/)
+This server is the backend for a [fullstack reddit clone](https://reddit-client-nu.vercel.app/).
 
 [Frontend repository](https://github.com/prajotsurey/reddit-client)
 
-Built using Typescript, TypeOrm, type-graphql and apollo-server-express. 
+## Overview
+This project is part of a Fullstack reddit clone. It includes functionality to create a user, create a post, view posts, like and unlike posts and deleting posts.
+
+It uses GraphQl with apollo-server-express and also uses PostgreSQL as the database. I also used dataloaders, which are a graphQl tool for batching requets. It allowed me to avoid the n+1 problem while fetching posts and their creators.
+
+This server is deployed on AWS Elastic Beanstalk and usese AWS Load Balancers and AWS Cloudfront to provide SSL which is required to communicate with the frontend.
+
+## Upcoming additions
+Ability to upload images.
+
+## Contents
+
 * [Installation](#user-content-installation)
 * [Usage](#user-content-usage)
 * [Deployment](#user-content-deployment)
