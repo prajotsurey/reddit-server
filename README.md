@@ -5,7 +5,7 @@ This server is the backend for a [fullstack reddit clone](https://reddit-client-
 [Frontend repository](https://github.com/prajotsurey/reddit-client)
 
 ## Overview
-This project is part of a Fullstack reddit clone. It includes functionality to create a user, create a post, view posts, like and unlike posts and deleting posts.
+This project is part of a Fullstack reddit clone. It includes functionality to create a user, create a post, view posts, upvote and downvote posts and deleting posts.
 
 It uses GraphQl with apollo-server-express and also uses PostgreSQL as the database. I also used dataloaders, which are a graphQl tool for batching requets. It allowed me to avoid the n+1 problem while fetching posts and their creators.
 
