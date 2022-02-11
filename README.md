@@ -1,6 +1,6 @@
 # Reddit clone server built with Typescript, Apollo-express-server, PostgreSQL and Graphql
 
-This server is the backend for a [fullstack reddit clone](https://reddit-client-nu.vercel.app/).
+This server is the backend for a [fullstack reddit clone](https://reddit-client-murex.vercel.app/).
 
 [Frontend repository](https://github.com/prajotsurey/reddit-client)
 
