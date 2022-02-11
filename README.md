@@ -103,5 +103,5 @@ To do this, edit the 'start' script in packge.json as follows:
 
 * [Enabling SSL without a custom domain](https://www.linkedin.com/pulse/how-connect-your-backend-api-elastic-beanstalk-cloudfront-kamau/)
 
-
+For some reason creating a load balanced environment does not work for this deployment. Create a normal environment as specified on tutorial no. 1 and then follow the second tutorial to convert it into load balanced. While changing the configuration of EB environment to 'loadbalanced' make sure to change the number of max instances to 1.
 
